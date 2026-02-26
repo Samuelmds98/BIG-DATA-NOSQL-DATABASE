@@ -1,4 +1,4 @@
-# Teste de MongoDB - Sistemas NoSQL
+# Seu Desafio Final: Projeto de Conclusão - NoSQL
 
 ## 📚 Sobre o Projeto
 
@@ -94,7 +94,7 @@ mongodb-nosql-exam/
 
 ## 📝 Licença
 
-Este material é disponibilizado para fins educacionais. Sinta-se livre para adaptar conforme suas necessidades.
+Este material é disponibilizado para fins educacionais.
 
 ## 👨‍🏫 Autor
 
