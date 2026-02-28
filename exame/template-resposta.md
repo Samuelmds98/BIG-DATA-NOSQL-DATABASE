@@ -2,10 +2,10 @@
 
 ## IDENTIFICAÇÃO
 
-**Nome completo:** _____________________________________________  
-**Matrícula:** ____________________  
-**Email:** ________________________________________  
-**Data:** ___/___/______
+**Nome completo:** Samuel Mendes da Silva  
+**Matrícula:** 2427964
+**Email:** samuelmds16@gmail.com
+**Data:** 28/02/2026
 
 ---
 
@@ -15,24 +15,47 @@
 ```javascript
 // Cole aqui seu comando find()
 
+db.movies.find(
+  {
+    $and: [
+      { genres: { $in: ["Drama"] } },
+      { year: { $gte: 2010 } },
+      { year: { $lte: 2015 } },
+      { "imdb.rating": { $gt: 7.5 } }
+    ]
+  },
+  {
+    title: 1,
+    year: 1,
+    "imdb.rating": 1,
+    genres: 1,
+    _id: 0
+  }
+).sort({ "imdb.rating": -1 }).limit(20)
 
 ```
 
 ### Resultado Obtido
-- **Quantidade de documentos encontrados:** ______
+- **Quantidade de documentos encontrados:** 352
 - **5 primeiros filmes (título e rating):**
-  1. 
-  2. 
-  3. 
-  4. 
-  5. 
+  1. Drishyam 8.9
+  2. Most Likely to Succeed 8.9
+  3. Kaakkaa Muttai 8.8
+  4. Killswitch 8.8
+  5. The Great Alone 8.7
 
 ### Screenshot
-_[Anexar screenshot ou indicar arquivo: questao01.png]_
+Q1.png
 
 ### Observações (opcional)
-
-
+Como estou conectado via terminal contei usando:
+```
+db.movies.countDocuments({
+  genres: { $in: ["Drama"] },
+  year: { $gte: 2010, $lte: 2015 },
+  "imdb.rating": { $gt: 7.5 }
+})
+```
 ---
 
 ## QUESTÃO 2 - Agregação com Agrupamento
@@ -41,8 +64,20 @@ _[Anexar screenshot ou indicar arquivo: questao01.png]_
 ```javascript
 // Cole aqui sua pipeline de agregação
 db.movies.aggregate([
-
-
+  {
+    $match: {
+      "countries.0": { $exists: true }
+    }
+  },
+  { $unwind: "$countries" },
+  {
+    $group: {
+      _id: "$countries",
+      filmes: { $sum: 1 }
+    }
+  },
+  { $sort: { filmes: -1 } },
+  { $limit: 10 }
 ])
 ```
 
@@ -50,19 +85,20 @@ db.movies.aggregate([
 
 | Posição | País | Quantidade de Filmes |
 |---------|------|----------------------|
-| 1º | | |
-| 2º | | |
-| 3º | | |
-| 4º | | |
-| 5º | | |
-| 6º | | |
-| 7º | | |
-| 8º | | |
-| 9º | | |
-| 10º | | |
+
+1       | USA        | 10921
+2       | UK         | 2652
+3       | France     | 2647
+4       | Germany    | 1494
+5       | Canada     | 1260
+6       | Italy      | 1217
+7       | Japan      | 786
+8       | Spain      | 675
+9       | India      | 564
+10      | Australia  | 470
 
 ### Screenshot
-_[Anexar screenshot ou indicar arquivo: questao02.png]_
+Q2.png
 
 ### Observações (opcional)
 
@@ -84,17 +120,18 @@ db.movies.aggregate([
 
 | Posição | Ator | Qtd Filmes | Rating Médio |
 |---------|------|------------|--------------|
-| 1º | | | |
-| 2º | | | |
-| 3º | | | |
-| 4º | | | |
-| 5º | | | |
+1       | Gèrard Depardieu     | 67         | 6.69
+2       | Robert De Niro       | 58         | 6.96
+3       | Michael Caine        | 51         | 6.71
+4       | Bruce Willis         | 49         | 6.41
+5       | Samuel L. Jackson    | 48         | 6.40
 
 ### Screenshot
-_[Anexar screenshot ou indicar arquivo: questao03.png]_
+Q3.png
 
 ### Observações (opcional)
 
+O enunciado pede para considerar apenas filmes que tenham rating definido, então adicionei um $match inicial com $exists: true antes de entrar na pipeline principal. filtrei filmes sem elenco pra não processar documento inútil
 
 ---
 
@@ -130,9 +167,14 @@ db.movies.aggregate([
   3. Nome: __________ | Email: __________
 
 ### Screenshot
-_[Anexar screenshot ou indicar arquivo: questao04.png]_
+
+Q4.png
 
 ### Observações (opcional)
+
+Primeira tentativa foi fazer o $lookup sem filtro previo, travou.
+Tentei colocar $limit dentro do $lookup mas não rola, resolvi usando $slice, mas ainda ficou muito ruim.
+então a partir dos comments agrupei os filmes. estourou limite de memoria.
 
 ---
 
